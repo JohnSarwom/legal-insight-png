@@ -2,7 +2,7 @@ import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { ArrowUp, Scale } from "lucide-react";
+import { Scale } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 
@@ -133,10 +133,7 @@ function ChatWindow({ threadId }: { threadId: string }) {
               <PromptInputSubmit
                 status={status}
                 disabled={!input.trim() || isLoading}
-                size="icon-sm"
-              >
-                <ArrowUp className="h-4 w-4" />
-              </PromptInputSubmit>
+              />
             </PromptInputFooter>
           </PromptInput>
         </div>
