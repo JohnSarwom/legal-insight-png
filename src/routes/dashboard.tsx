@@ -62,7 +62,7 @@ function DashboardPage() {
 
         <nav className="space-y-1 text-sm flex-1">
           <NavItem icon={Sparkles} label="Overview" active />
-          <NavItem icon={MessagesSquare} label="AI Chat" soon />
+          <NavItem icon={MessagesSquare} label="AI Chat" to="/chat" />
           <NavItem icon={Library} label="Knowledge bases" soon />
           <NavItem icon={Upload} label="Upload center" soon />
           <NavItem icon={Search} label="Search" soon />
@@ -158,17 +158,21 @@ function NavItem({
   label,
   active,
   soon,
+  to,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   active?: boolean;
   soon?: boolean;
+  to?: string;
 }) {
-  return (
+  const inner = (
     <div
       className={`flex items-center justify-between rounded-md px-3 py-2 ${
-        active ? "bg-primary/15 text-foreground" : "text-muted-foreground hover:bg-surface-elevated"
-      }`}
+        active
+          ? "bg-primary/15 text-foreground"
+          : "text-muted-foreground hover:bg-surface-elevated hover:text-foreground"
+      } ${to ? "cursor-pointer" : ""}`}
     >
       <span className="flex items-center gap-2.5">
         <Icon className="h-4 w-4" />
@@ -181,6 +185,14 @@ function NavItem({
       )}
     </div>
   );
+  if (to) {
+    return (
+      <Link to={to} className="block">
+        {inner}
+      </Link>
+    );
+  }
+  return inner;
 }
 
 function Stat({ label, value }: { label: string; value: string }) {
