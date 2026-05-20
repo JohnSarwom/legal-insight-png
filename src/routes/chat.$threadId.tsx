@@ -1,5 +1,5 @@
 import { createFileRoute, useParams } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { Scale } from "lucide-react";
@@ -57,12 +57,14 @@ function ChatWindow({ threadId }: { threadId: string }) {
   });
 
   const [input, setInput] = useState("");
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  // Focus on mount and after status returns to idle
+  // Focus textarea on thread change
   useEffect(() => {
-    textareaRef.current?.focus();
-  }, [threadId, status]);
+    const el = document.querySelector<HTMLTextAreaElement>(
+      'textarea[placeholder^="Ask a question"]',
+    );
+    el?.focus();
+  }, [threadId]);
 
   // Persist messages to localStorage whenever they change and stream is idle
   useEffect(() => {
@@ -120,7 +122,6 @@ function ChatWindow({ threadId }: { threadId: string }) {
             }}
           >
             <PromptInputTextarea
-              ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask a question about PNG law…"
