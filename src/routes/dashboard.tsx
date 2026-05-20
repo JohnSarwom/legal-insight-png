@@ -106,8 +106,8 @@ function DashboardPage() {
                 Your secure legal AI workspace is ready. AI features ship next.
               </p>
             </div>
-            <Button className="bg-primary hover:bg-primary/90 shadow-glow gap-2" disabled>
-              <Upload className="h-4 w-4" /> Upload documents
+            <Button asChild className="bg-primary hover:bg-primary/90 shadow-glow gap-2">
+              <Link to="/knowledge"><Upload className="h-4 w-4" /> Upload documents</Link>
             </Button>
           </div>
 
