@@ -61,12 +61,7 @@ function ChatLayout() {
     if (params.threadId === id) navigate({ to: "/chat" });
   };
 
-  // Expose to nested route via global ref (simple, avoids context plumbing)
-  (globalThis as unknown as { __chatCtx?: Ctx }).__chatCtx = {
-    threads,
-    upsertThread,
-    activeId: params.threadId,
-  };
+  // unused helper removed
 
   return (
     <div className="h-screen flex bg-background text-foreground">
