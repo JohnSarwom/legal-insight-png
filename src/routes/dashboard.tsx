@@ -63,10 +63,10 @@ function DashboardPage() {
         <nav className="space-y-1 text-sm flex-1">
           <NavItem icon={Sparkles} label="Overview" active />
           <NavItem icon={MessagesSquare} label="AI Chat" to="/chat" />
-          <NavItem icon={Library} label="Knowledge bases" soon />
-          <NavItem icon={Upload} label="Upload center" soon />
+          <NavItem icon={Library} label="Knowledge" to="/knowledge" />
+          <NavItem icon={Upload} label="Upload center" to="/knowledge" />
           <NavItem icon={Search} label="Search" soon />
-          <NavItem icon={FileText} label="Documents" soon />
+          <NavItem icon={FileText} label="Documents" to="/knowledge" />
         </nav>
 
         <div className="rounded-lg border border-border/60 bg-surface-elevated p-3 text-xs">
@@ -106,8 +106,8 @@ function DashboardPage() {
                 Your secure legal AI workspace is ready. AI features ship next.
               </p>
             </div>
-            <Button className="bg-primary hover:bg-primary/90 shadow-glow gap-2" disabled>
-              <Upload className="h-4 w-4" /> Upload documents
+            <Button asChild className="bg-primary hover:bg-primary/90 shadow-glow gap-2">
+              <Link to="/knowledge"><Upload className="h-4 w-4" /> Upload documents</Link>
             </Button>
           </div>
 

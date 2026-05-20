@@ -19,7 +19,10 @@ import {
   PromptInputSubmit,
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
+import { DocumentPicker } from "@/components/document-picker";
+import { supabase } from "@/integrations/supabase/client";
 import { loadThreads, saveThreads, deriveTitle, type ChatThread } from "@/lib/chat-threads";
+import { getThreadDocs, setThreadDocs } from "@/lib/thread-docs";
 import legalMark from "@/assets/legal-ai-mark.png";
 
 export const Route = createFileRoute("/chat/$threadId")({
@@ -32,18 +35,31 @@ function ChatThreadPage() {
 }
 
 function ChatWindow({ threadId }: { threadId: string }) {
-  // Load initial messages from localStorage once per thread
   const initial = useMemo<UIMessage[]>(() => {
     const t = loadThreads().find((x) => x.id === threadId);
     return t?.messages ?? [];
   }, [threadId]);
 
+  const [documentIds, setDocumentIdsState] = useState<string[]>(() => getThreadDocs(threadId));
+
+  const setDocumentIds = (ids: string[]) => {
+    setDocumentIdsState(ids);
+    setThreadDocs(threadId, ids);
+  };
+
+  // Rebuild transport when attached doc selection changes so the body carries the latest list.
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
+        headers: async (): Promise<Record<string, string>> => {
+          const { data } = await supabase.auth.getSession();
+          const token = data.session?.access_token;
+          return token ? { Authorization: `Bearer ${token}` } : {};
+        },
+        body: () => ({ documentIds }),
       }),
-    [],
+    [documentIds],
   );
 
   const { messages, sendMessage, status, error } = useChat({
@@ -58,7 +74,6 @@ function ChatWindow({ threadId }: { threadId: string }) {
 
   const [input, setInput] = useState("");
 
-  // Focus textarea on thread change
   useEffect(() => {
     const el = document.querySelector<HTMLTextAreaElement>(
       'textarea[placeholder^="Ask a question"]',
@@ -66,7 +81,6 @@ function ChatWindow({ threadId }: { threadId: string }) {
     el?.focus();
   }, [threadId]);
 
-  // Persist messages to localStorage whenever they change and stream is idle
   useEffect(() => {
     if (status === "submitted" || status === "streaming") return;
     if (messages.length === 0) return;
@@ -90,6 +104,10 @@ function ChatWindow({ threadId }: { threadId: string }) {
     await sendMessage({ text });
   };
 
+  const loadingLabel = documentIds.length > 0
+    ? "Searching your documents…"
+    : "Consulting PNG legal sources…";
+
   return (
     <div className="flex h-full flex-col">
       <Conversation className="flex-1">
@@ -101,7 +119,7 @@ function ChatWindow({ threadId }: { threadId: string }) {
           )}
           {status === "submitted" && (
             <div className="mt-2 pl-1">
-              <Shimmer>Consulting PNG legal sources…</Shimmer>
+              <Shimmer>{loadingLabel}</Shimmer>
             </div>
           )}
           {error && (
@@ -115,6 +133,14 @@ function ChatWindow({ threadId }: { threadId: string }) {
 
       <div className="border-t border-border/60 bg-surface/40 backdrop-blur">
         <div className="mx-auto w-full max-w-3xl px-4 py-4">
+          <div className="mb-2 flex items-center justify-between">
+            <DocumentPicker selected={documentIds} onChange={setDocumentIds} />
+            {documentIds.length > 0 && (
+              <p className="text-[10px] uppercase tracking-widest text-primary-glow">
+                Grounded · cited answers
+              </p>
+            )}
+          </div>
           <PromptInput
             onSubmit={(_msg, e) => {
               e.preventDefault();
@@ -193,7 +219,8 @@ function EmptyState() {
         How can I help with PNG law today?
       </h2>
       <p className="mt-2 text-sm text-muted-foreground">
-        Ask about statutes, constitutional rights, case law, or procedure.
+        Ask about statutes, constitutional rights, case law, or procedure. Attach documents below
+        to ground answers in your library.
       </p>
       <div className="mt-8 grid sm:grid-cols-2 gap-2.5 text-left">
         {samples.map((s) => (
