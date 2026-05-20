@@ -21,19 +21,6 @@ export const Route = createFileRoute("/chat")({
   component: ChatLayout,
 });
 
-type Ctx = {
-  threads: ChatThread[];
-  upsertThread: (t: ChatThread) => void;
-  activeId?: string;
-};
-
-export function useChatLayout(): Ctx {
-  return (globalThis as unknown as { __chatCtx?: Ctx }).__chatCtx ?? {
-    threads: [],
-    upsertThread: () => {},
-  };
-}
-
 function ChatLayout() {
   const navigate = useNavigate();
   const params = useParams({ strict: false }) as { threadId?: string };
