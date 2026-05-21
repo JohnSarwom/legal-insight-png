@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
+import { AppLayout } from "@/components/app-layout";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -45,57 +46,8 @@ function DashboardPage() {
     "Counsel";
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Sidebar */}
-      <aside className="fixed inset-y-0 left-0 w-60 border-r border-border/60 bg-surface/50 p-5 hidden md:flex flex-col">
-        <Link to="/" className="flex items-center gap-2.5 mb-10">
-          <div className="grid h-8 w-8 place-items-center rounded-md bg-gradient-to-br from-primary to-primary-glow shadow-glow">
-            <Scale className="h-4 w-4 text-primary-foreground" strokeWidth={2.5} />
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="text-sm font-semibold">PNG Legal AI</span>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              Workspace
-            </span>
-          </div>
-        </Link>
-
-        <nav className="space-y-1 text-sm flex-1">
-          <NavItem icon={Sparkles} label="Overview" active />
-          <NavItem icon={MessagesSquare} label="AI Chat" to="/chat" />
-          <NavItem icon={Library} label="Knowledge" to="/knowledge" />
-          <NavItem icon={Upload} label="Upload center" to="/knowledge" />
-          <NavItem icon={Search} label="Search" soon />
-          <NavItem icon={FileText} label="Documents" to="/knowledge" />
-        </nav>
-
-        <div className="rounded-lg border border-border/60 bg-surface-elevated p-3 text-xs">
-          <p className="font-medium truncate">{display}</p>
-          <p className="text-muted-foreground truncate">{user.email}</p>
-          <div className="mt-2 flex flex-wrap gap-1">
-            {(roles.length ? roles : ["client"]).map((r) => (
-              <span
-                key={r}
-                className="rounded-md bg-primary/15 text-primary-glow border border-primary/20 px-1.5 py-0.5 text-[10px] uppercase tracking-wider"
-              >
-                {r}
-              </span>
-            ))}
-          </div>
-          <Button
-            onClick={() => signOut()}
-            variant="ghost"
-            size="sm"
-            className="w-full mt-3 justify-start text-muted-foreground hover:text-foreground"
-          >
-            <LogOut className="h-3.5 w-3.5 mr-2" /> Sign out
-          </Button>
-        </div>
-      </aside>
-
-      {/* Main */}
-      <main className="md:pl-60">
-        <div className="container max-w-6xl px-6 py-12">
+    <AppLayout>
+      <div className="container max-w-6xl px-6 py-12">
           <div className="flex items-end justify-between flex-wrap gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.25em] text-primary-glow">Overview</p>
@@ -123,20 +75,23 @@ function DashboardPage() {
               icon={MessagesSquare}
               title="AI Chat"
               body="Ask grounded legal questions and get cited answers from your knowledge bases."
+              accentColor="from-blue-500 to-cyan-500"
             />
             <ComingSoonCard
               icon={Library}
               title="Knowledge bases"
               body="Group documents by matter, jurisdiction, or practice area."
+              accentColor="from-purple-500 to-pink-500"
             />
             <ComingSoonCard
               icon={Search}
               title="Semantic search"
               body="Find passages by meaning across thousands of pages."
+              accentColor="from-amber-500 to-orange-500"
             />
           </div>
 
-          <div className="mt-10 rounded-2xl border border-border/60 bg-surface p-8">
+          <div className="mt-10 rounded-2xl bg-surface-elevated/70 p-8 shadow-card hover:bg-surface-elevated/90 transition-colors">
             <p className="text-xs uppercase tracking-[0.25em] text-primary-glow">What's next</p>
             <h2 className="mt-2 font-display text-2xl tracking-tight">
               v2 ships the AI core
@@ -148,8 +103,7 @@ function DashboardPage() {
             </p>
           </div>
         </div>
-      </main>
-    </div>
+    </AppLayout>
   );
 }
 
@@ -197,9 +151,9 @@ function NavItem({
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-surface p-5 shadow-card">
+    <div className="rounded-xl bg-surface-elevated p-5 shadow-card hover:bg-surface-elevated/95 transition-colors">
       <p className="text-xs uppercase tracking-widest text-muted-foreground">{label}</p>
-      <p className="mt-2 font-display text-3xl tracking-tight">{value}</p>
+      <p className="mt-2 font-display text-3xl tracking-tight text-gradient">{value}</p>
     </div>
   );
 }
@@ -208,21 +162,27 @@ function ComingSoonCard({
   icon: Icon,
   title,
   body,
+  accentColor = "from-blue-500 to-cyan-500",
 }: {
   icon: React.ComponentType<{ className?: string }>;
   title: string;
   body: string;
+  accentColor?: string;
 }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-surface p-6 shadow-card">
-      <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary/10 border border-primary/20 text-primary-glow">
-        <Icon className="h-5 w-5" />
+    <div className={`rounded-xl bg-surface-elevated/70 p-6 shadow-card backdrop-blur-sm overflow-hidden relative group hover:bg-surface-elevated/90 transition-all duration-200 hover:shadow-lg`}>
+      <div className={`absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b ${accentColor}`} />
+      <div className={`absolute inset-0 bg-gradient-to-br ${accentColor} opacity-0 group-hover:opacity-5 transition-opacity duration-200`} />
+      <div className="relative z-10">
+        <div className="grid h-10 w-10 place-items-center rounded-lg bg-primary/20 text-primary-glow group-hover:bg-primary/30 transition-colors">
+          <Icon className="h-5 w-5" />
+        </div>
+        <h3 className="mt-4 text-base font-semibold tracking-tight">{title}</h3>
+        <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{body}</p>
+        <span className="mt-4 inline-block text-[10px] uppercase tracking-widest text-primary-glow">
+          Coming next
+        </span>
       </div>
-      <h3 className="mt-4 text-base font-semibold tracking-tight">{title}</h3>
-      <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{body}</p>
-      <span className="mt-4 inline-block text-[10px] uppercase tracking-widest text-primary-glow">
-        Coming next
-      </span>
     </div>
   );
 }

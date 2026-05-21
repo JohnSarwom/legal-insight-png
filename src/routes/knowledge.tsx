@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 
 import { Button } from "@/components/ui/button";
+import { AppLayout } from "@/components/app-layout";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -157,19 +158,20 @@ function KnowledgePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border/60 bg-surface/40 backdrop-blur">
-        <div className="container max-w-5xl px-6 py-4 flex items-center gap-3">
-          <Link
-            to="/dashboard"
-            className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm"
-          >
-            <ArrowLeft className="h-4 w-4" /> Dashboard
-          </Link>
-          <span className="text-muted-foreground/40">/</span>
-          <h1 className="font-display text-lg tracking-tight">Knowledge</h1>
-        </div>
-      </header>
+    <AppLayout>
+      <div className="min-h-screen bg-background text-foreground">
+        <header className="border-b border-border/60 bg-surface/40 backdrop-blur">
+          <div className="container max-w-5xl px-6 py-4 flex items-center gap-3">
+            <Link
+              to="/dashboard"
+              className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm"
+            >
+              <ArrowLeft className="h-4 w-4" /> Dashboard
+            </Link>
+            <span className="text-muted-foreground/40">/</span>
+            <h1 className="font-display text-lg tracking-tight">Knowledge</h1>
+          </div>
+        </header>
 
       <main className="container max-w-5xl px-6 py-10">
         <div className="flex items-end justify-between flex-wrap gap-4">
@@ -280,7 +282,8 @@ function KnowledgePage() {
           </Button>
         </div>
       </main>
-    </div>
+      </div>
+    </AppLayout>
   );
 }
 

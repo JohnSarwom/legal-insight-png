@@ -48,17 +48,20 @@
 :root {
   --radius: 0.75rem;
 
+  /* Card Brightness Control — adjust this single value to change all card brightness */
+  --card-brightness: 0.19;
+
   /* Modern AI Legaltech — near-black canvas, electric indigo accents */
   --background: oklch(0.13 0.018 270);
   --foreground: oklch(0.97 0.005 250);
 
   --surface: oklch(0.16 0.02 270);
-  --surface-elevated: oklch(0.19 0.022 270);
+  --surface-elevated: oklch(var(--card-brightness) 0.022 270);
 
-  --card: oklch(0.16 0.02 270);
+  --card: oklch(var(--card-brightness) 0.02 270);
   --card-foreground: oklch(0.97 0.005 250);
 
-  --popover: oklch(0.16 0.022 270);
+  --popover: oklch(var(--card-brightness) 0.022 270);
   --popover-foreground: oklch(0.97 0.005 250);
 
   --primary: oklch(0.62 0.22 277);            /* electric indigo #4f46e5 */
